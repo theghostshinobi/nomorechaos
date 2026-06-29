@@ -32,10 +32,10 @@ enum AXWindows {
         // 1. Trova il PID proprietario della finestra fisica da CoreGraphics
         guard let list = CGWindowListCopyWindowInfo([.optionIncludingWindow], windowID) as? [[String: Any]],
               let info = list.first,
-              let pid = info[kCGWindowOwnerPID as String] as? pid_t,
-              let windowTitle = info[kCGWindowName as String] as? String else {
+              let pid = info[kCGWindowOwnerPID as String] as? pid_t else {
             return false
         }
+        let windowTitle = info[kCGWindowName as String] as? String ?? ""
 
         // 2. Trova l'applicazione attiva corrispondente
         guard let app = NSRunningApplication(processIdentifier: pid),
