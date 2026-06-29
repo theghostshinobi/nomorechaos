@@ -46,24 +46,17 @@ enum AXWindows {
         let appEl = AXUIElementCreateApplication(pid)
         AXUIElementSetMessagingTimeout(appEl, 0.3)
 
-        // --- Phase 0: Se l'app è già attiva e abbiamo un titolo finestra, prova lo switch nativo tramite il menu "Window" ---
-        if app.isActive && !windowTitle.isEmpty {
-            if performMenuJump(appEl: appEl, windowTitle: windowTitle) {
-                return true
-            }
-        }
-
-        // --- Phase 1: Cerca la finestra nello Space corrente (senza attivare l'app) ---
+        // --- Phase 1: Cerca la finestra ESATTA per CGWindowID sullo Space corrente ---
         var targetWindow: AXUIElement?
         if let win = findAXWindow(windowID: windowID, in: appEl) {
             targetWindow = win
         } else {
-            // --- Phase 2: La finestra è su un altro Space. Attiva l'app per forzare lo switch dello Space ---
+            // --- Phase 2: La finestra è su un altro Space. Attiva l'app per forzare lo switch ---
             app.activate(options: [.activateIgnoringOtherApps])
 
             // Retry loop: attendiamo che lo Space cambi e la gerarchia AX si aggiorni
-            for _ in 0..<5 {
-                try? await Task.sleep(nanoseconds: 20_000_000) // 20ms
+            for _ in 0..<10 {
+                try? await Task.sleep(nanoseconds: 50_000_000) // 50ms (più tempo per lo Space switch)
                 if let win = findAXWindow(windowID: windowID, in: appEl) {
                     targetWindow = win
                     break
@@ -71,19 +64,30 @@ enum AXWindows {
             }
         }
 
-        guard let win = targetWindow else { return false }
+        // --- Phase 3: Se trovata via AX, raise preciso per CGWindowID ---
+        if let win = targetWindow {
+            // Ripristina se minimizzata
+            AXUIElementSetAttributeValue(win, kAXMinimizedAttribute as CFString, kCFBooleanFalse)
+            // Porta la finestra in evidenza
+            AXUIElementSetAttributeValue(win, kAXMainAttribute as CFString, kCFBooleanTrue)
+            AXUIElementSetAttributeValue(win, kAXFocusedAttribute as CFString, kCFBooleanTrue)
+            AXUIElementPerformAction(win, kAXRaiseAction as CFString)
+            // Re-attiva per garantire il focus principale
+            app.activate(options: [.activateIgnoringOtherApps])
+            return true
+        }
 
-        // Ripristina se minimizzata
-        AXUIElementSetAttributeValue(win, kAXMinimizedAttribute as CFString, kCFBooleanFalse)
+        // --- Phase 4 (Fallback): AX non ha trovato la finestra. Ultimo tentativo via menu "Window" ---
+        // Questo è meno preciso ma può funzionare per app che non espongono bene kAXWindows
+        if !windowTitle.isEmpty {
+            app.activate(options: [.activateIgnoringOtherApps])
+            try? await Task.sleep(nanoseconds: 100_000_000) // 100ms per dare tempo all'app
+            if performMenuJump(appEl: appEl, windowTitle: windowTitle) {
+                return true
+            }
+        }
 
-        // Porta la finestra in evidenza
-        AXUIElementSetAttributeValue(win, kAXMainAttribute as CFString, kCFBooleanTrue)
-        AXUIElementSetAttributeValue(win, kAXFocusedAttribute as CFString, kCFBooleanTrue)
-        AXUIElementPerformAction(win, kAXRaiseAction as CFString)
-
-        // Re-attiva per garantire il focus principale
-        app.activate(options: [.activateIgnoringOtherApps])
-        return true
+        return false
     }
 
     /// Cerca il menu "Window" nella barra dei menu ed esegue il click sulla voce della finestra target
