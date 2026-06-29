@@ -89,7 +89,6 @@ final class WindowTracker: ObservableObject {
         let mine = Bundle.main.bundleIdentifier
         var out: [TrackedWindow] = []
         var seen = Set<Int>()
-        var seenSignatures = [String: Bool]()
 
 
         for info in infoList {
@@ -139,27 +138,10 @@ final class WindowTracker: ObservableObject {
             guard !seen.contains(windowNumber) else { continue }
             seen.insert(windowNumber)
 
-            // Deduplica per bundleID + Titolo identico (es. finestre helper invisibili di Claude o Chrome)
-            if !title.isEmpty {
-                let sigKey = "\(bundleID)_\(title)"
-                if let previouslyOnscreen = seenSignatures[sigKey] {
-                    if onscreen && !previouslyOnscreen {
-                        if let idx = out.firstIndex(where: { $0.title == title && $0.bundleID == bundleID }) {
-                            out[idx] = TrackedWindow(
-                                id: windowNumber,
-                                title: title,
-                                bundleID: bundleID,
-                                appName: ownerName,
-                                x: Double(bounds.origin.x),
-                                y: Double(bounds.origin.y)
-                            )
-                            seenSignatures[sigKey] = true
-                        }
-                    }
-                    continue
-                }
-                seenSignatures[sigKey] = onscreen
-            }
+            // NOTE: Deduplication is handled above by the `seen` set which
+            // tracks unique CGWindowIDs. Two physical windows of the same app
+            // (even with identical titles) have different CGWindowIDs and MUST
+            // both appear so they can be assigned to separate projects.
 
             out.append(TrackedWindow(
                 id: windowNumber,
