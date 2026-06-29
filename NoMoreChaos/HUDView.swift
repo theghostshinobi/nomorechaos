@@ -696,7 +696,7 @@ struct HUDView: View {
         }
         .contentShape(Rectangle())
         .onTapGesture {
-            nav.selectedWindowIndex = index
+            nav.selectWindow(at: index)
             nav.focus = .assigned
         }
     }
@@ -705,7 +705,7 @@ struct HUDView: View {
         let isSelected = nav.selectedWindowIndex == nav.windowEntries.count && nav.focus == .assigned
         
         return Button {
-            nav.selectedWindowIndex = nav.windowEntries.count
+            nav.selectWindow(at: nav.windowEntries.count)
             nav.isAddingWindows = true
             nav.focus = .available
             nav.selectedAvailableIndex = 0
@@ -762,7 +762,7 @@ struct HUDView: View {
                     Button {
                         nav.isAddingWindows = false
                         nav.focus = .assigned
-                        nav.selectedWindowIndex = min(nav.selectedWindowIndex, nav.windowEntries.count - 1)
+                        nav.selectWindow(at: min(nav.selectedWindowIndex, nav.windowEntries.count - 1))
                     } label: {
                         HStack(spacing: 3) {
                             Image(systemName: "chevron.left")
@@ -952,7 +952,7 @@ struct HUDView: View {
             isWinSel: isWinSel,
             onSelect: {
                 nav.selectedAppGroupIndex = groupIndex
-                nav.selectedWindowIndex = entryIdx
+                nav.selectWindow(at: entryIdx)
                 nav.refreshWindowEntries()
             },
             onRemove: {
@@ -1131,7 +1131,7 @@ struct HUDView: View {
             }
             nav.selectedProjectIndex = index
             nav.selectedAppGroupIndex = 0
-            nav.selectedWindowIndex = 0
+            nav.selectWindow(at: 0)
             nav.refreshAppGroups()
         }
     }

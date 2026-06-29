@@ -11,6 +11,19 @@ final class NavigationController: ObservableObject {
     @Published var selectedAppGroupIndex: Int = 0
     @Published var selectedWindowIndex: Int = 0
 
+    /// Stable identity of the selected window. When the `windowEntries` array
+    /// is re-sorted, `selectedWindowIndex` is recalculated from this ID so the
+    /// selection never drifts to the wrong window.
+    private(set) var selectedWindowID: Int32? = nil
+
+    /// Set the selected window by index, keeping the ID in sync.
+    func selectWindow(at index: Int) {
+        selectedWindowIndex = index
+        if windowEntries.indices.contains(index) {
+            selectedWindowID = windowEntries[index].windowID
+        }
+    }
+
     /// Index of the highlighted row inside the "available windows" list.
     /// Separate from the assigned-window selection because TAB lets the user
     /// move between the two columns and each side keeps its own cursor.
@@ -247,7 +260,7 @@ final class NavigationController: ObservableObject {
         // Auto-exit adding mode once window is assigned, and focus on the newly added window
         isAddingWindows = false
         focus = .assigned
-        selectedWindowIndex = windowEntries.count - 1
+        selectWindow(at: windowEntries.count - 1)
     }
 
     func assignAll(_ windows: [TrackedWindow]) {
@@ -269,7 +282,7 @@ final class NavigationController: ObservableObject {
         
         isAddingWindows = false
         focus = .assigned
-        selectedWindowIndex = windowEntries.count - 1
+        selectWindow(at: windowEntries.count - 1)
     }
 
     /// Remove a window assignment from the current project.
@@ -283,7 +296,7 @@ final class NavigationController: ObservableObject {
             focus = .available
             selectedAvailableIndex = 0
         } else {
-            selectedWindowIndex = min(selectedWindowIndex, windowEntries.count - 1)
+            selectWindow(at: min(selectedWindowIndex, windowEntries.count - 1))
         }
     }
 
@@ -325,7 +338,13 @@ final class NavigationController: ObservableObject {
             let titleB = b.windowTitle ?? ""
             return titleA.localizedCaseInsensitiveCompare(titleB) == .orderedAscending
         }
-        selectedWindowIndex = min(selectedWindowIndex, max(windowEntries.count - 1, 0))
+        // Resolve index from the stored selectedWindowID after re-sort
+        if let wid = selectedWindowID,
+           let idx = windowEntries.firstIndex(where: { $0.windowID == wid }) {
+            selectedWindowIndex = idx
+        } else {
+            selectWindow(at: min(selectedWindowIndex, max(windowEntries.count - 1, 0)))
+        }
     }
 
     // MARK: - Project Navigation (↑ / ↓)
@@ -334,7 +353,7 @@ final class NavigationController: ObservableObject {
         guard selectedProjectIndex > 0 else { return }
         selectedProjectIndex -= 1
         selectedAppGroupIndex = 0
-        selectedWindowIndex = 0
+        selectWindow(at: 0)
         refreshAppGroups()
     }
 
@@ -342,7 +361,7 @@ final class NavigationController: ObservableObject {
         guard selectedProjectIndex < projects.count - 1 else { return }
         selectedProjectIndex += 1
         selectedAppGroupIndex = 0
-        selectedWindowIndex = 0
+        selectWindow(at: 0)
         refreshAppGroups()
     }
 
@@ -350,13 +369,13 @@ final class NavigationController: ObservableObject {
 
     func moveWindowLeft() {
         if selectedWindowIndex > 0 {
-            selectedWindowIndex -= 1
+            selectWindow(at: selectedWindowIndex - 1)
         }
     }
 
     func moveWindowRight() {
         if selectedWindowIndex < windowEntries.count - 1 {
-            selectedWindowIndex += 1
+            selectWindow(at: selectedWindowIndex + 1)
         }
     }
 
@@ -574,7 +593,7 @@ final class NavigationController: ObservableObject {
            projects.indices.contains(n - 1) {
             selectedProjectIndex = n - 1
             selectedAppGroupIndex = 0
-            selectedWindowIndex = 0
+            selectWindow(at: 0)
             refreshAppGroups()
             return true
         }
@@ -646,7 +665,7 @@ final class NavigationController: ObservableObject {
             if isAddingWindows && !windowEntries.isEmpty {
                 isAddingWindows = false
                 focus = .assigned
-                selectedWindowIndex = min(selectedWindowIndex, windowEntries.count - 1)
+                selectWindow(at: min(selectedWindowIndex, windowEntries.count - 1))
                 return true
             }
             return false
@@ -691,7 +710,7 @@ final class NavigationController: ObservableObject {
             if next != selectedProjectIndex {
                 selectedProjectIndex = next
                 selectedAppGroupIndex = 0
-                selectedWindowIndex = 0
+                selectWindow(at: 0)
                 refreshAppGroups()
             } else if delta > 0, next == projects.count - 1 {
                 isProjectFieldFocused = true
@@ -706,7 +725,7 @@ final class NavigationController: ObservableObject {
                 if isFocusable(.assigned) {
                     isAddingWindows = false
                     focus = .assigned
-                    selectedWindowIndex = min(selectedWindowIndex, windowEntries.count - 1)
+                    selectWindow(at: min(selectedWindowIndex, windowEntries.count - 1))
                 } else {
                     focus = .projects
                 }
@@ -723,7 +742,7 @@ final class NavigationController: ObservableObject {
                 isProjectFieldFocused = false
                 if isFocusable(.assigned) {
                     focus = .assigned
-                    selectedWindowIndex = 0
+                    selectWindow(at: 0)
                 } else if isFocusable(.available) {
                     focus = .available
                     selectedAvailableIndex = 0
@@ -732,13 +751,13 @@ final class NavigationController: ObservableObject {
         case .assigned:
             if delta < 0 {
                 if selectedWindowIndex > 0 {
-                    selectedWindowIndex -= 1
+                    selectWindow(at: selectedWindowIndex - 1)
                 } else {
                     focus = .projects
                 }
             } else {
                 if selectedWindowIndex < windowEntries.count {
-                    selectedWindowIndex += 1
+                    selectWindow(at: selectedWindowIndex + 1)
                 }
             }
         case .available:
@@ -746,7 +765,7 @@ final class NavigationController: ObservableObject {
                 if !windowEntries.isEmpty {
                     isAddingWindows = false
                     focus = .assigned
-                    selectedWindowIndex = min(selectedWindowIndex, windowEntries.count - 1)
+                    selectWindow(at: min(selectedWindowIndex, windowEntries.count - 1))
                 } else {
                     focus = .projects
                 }
