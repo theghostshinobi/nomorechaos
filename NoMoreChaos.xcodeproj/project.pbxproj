@@ -1,0 +1,399 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AA000001000000000000B001 /* NoMoreChaosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000F001 /* NoMoreChaosApp.swift */; };
+		AA000001000000000000B002 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000F002 /* AppDelegate.swift */; };
+		AA000001000000000000B003 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000F003 /* ContentView.swift */; };
+		AA000001000000000000B004 /* WindowTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000F004 /* WindowTracker.swift */; };
+		AA000001000000000000B020 /* AccessibilityWindows.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000F020 /* AccessibilityWindows.swift */; };
+		AA000001000000000000B005 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000F005 /* CoreDataManager.swift */; };
+		AA000001000000000000B006 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000F006 /* Persistence.swift */; };
+		AA000001000000000000B009 /* NoMoreChaos.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000F009 /* NoMoreChaos.xcdatamodeld */; };
+		AA000001000000000000B010 /* HUDPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000F010 /* HUDPanel.swift */; };
+		AA000001000000000000B011 /* HUDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000F011 /* HUDView.swift */; };
+		AA000001000000000000B012 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000F012 /* NavigationController.swift */; };
+		AA000001000000000000B013 /* MapPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000F013 /* MapPanel.swift */; };
+		AA000001000000000000B014 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000F014 /* MapView.swift */; };
+		AA000001000000000000B015 /* GeminiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000F015 /* GeminiService.swift */; };
+		AA000001000000000000B016 /* SuggestionBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000F016 /* SuggestionBannerView.swift */; };
+		AA000001000000000000B017 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA000001000000000000F017 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		AA000001000000000000F001 /* NoMoreChaosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoMoreChaosApp.swift; sourceTree = "<group>"; };
+		AA000001000000000000F002 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		AA000001000000000000F003 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		AA000001000000000000F004 /* WindowTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowTracker.swift; sourceTree = "<group>"; };
+		AA000001000000000000F020 /* AccessibilityWindows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityWindows.swift; sourceTree = "<group>"; };
+		AA000001000000000000F005 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		AA000001000000000000F006 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		AA000001000000000000F007 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AA000001000000000000F008 /* NoMoreChaos.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NoMoreChaos.entitlements; sourceTree = "<group>"; };
+		AA000001000000000000F00A /* NoMoreChaos.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = NoMoreChaos.xcdatamodel; sourceTree = "<group>"; };
+		AA0000010000000000005000 /* NoMoreChaos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NoMoreChaos.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA000001000000000000F010 /* HUDPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUDPanel.swift; sourceTree = "<group>"; };
+		AA000001000000000000F011 /* HUDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUDView.swift; sourceTree = "<group>"; };
+		AA000001000000000000F012 /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
+		AA000001000000000000F013 /* MapPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPanel.swift; sourceTree = "<group>"; };
+		AA000001000000000000F014 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
+		AA000001000000000000F015 /* GeminiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiService.swift; sourceTree = "<group>"; };
+		AA000001000000000000F016 /* SuggestionBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionBannerView.swift; sourceTree = "<group>"; };
+		AA000001000000000000F017 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AA0000010000000000008000 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AA0000010000000000002000 /* root */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000010000000000003000 /* NoMoreChaos */,
+				AA0000010000000000004000 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AA0000010000000000003000 /* NoMoreChaos */ = {
+			isa = PBXGroup;
+			children = (
+				AA000001000000000000F001 /* NoMoreChaosApp.swift */,
+				AA000001000000000000F002 /* AppDelegate.swift */,
+				AA000001000000000000F003 /* ContentView.swift */,
+				AA000001000000000000F004 /* WindowTracker.swift */,
+				AA000001000000000000F020 /* AccessibilityWindows.swift */,
+				AA000001000000000000F005 /* CoreDataManager.swift */,
+				AA000001000000000000F006 /* Persistence.swift */,
+				AA000001000000000000F010 /* HUDPanel.swift */,
+				AA000001000000000000F011 /* HUDView.swift */,
+				AA000001000000000000F012 /* NavigationController.swift */,
+				AA000001000000000000F013 /* MapPanel.swift */,
+				AA000001000000000000F014 /* MapView.swift */,
+				AA000001000000000000F015 /* GeminiService.swift */,
+				AA000001000000000000F016 /* SuggestionBannerView.swift */,
+				AA000001000000000000F009 /* NoMoreChaos.xcdatamodeld */,
+				AA000001000000000000F017 /* Assets.xcassets */,
+				AA000001000000000000F007 /* Info.plist */,
+				AA000001000000000000F008 /* NoMoreChaos.entitlements */,
+			);
+			path = NoMoreChaos;
+			sourceTree = "<group>";
+		};
+		AA0000010000000000004000 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000010000000000005000 /* NoMoreChaos.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AA0000010000000000006000 /* NoMoreChaos */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA000001000000000000B000 /* Build configuration list for PBXNativeTarget "NoMoreChaos" */;
+			buildPhases = (
+				AA0000010000000000007000 /* Sources */,
+				AA0000010000000000008000 /* Frameworks */,
+				AA0000010000000000009000 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NoMoreChaos;
+			productName = NoMoreChaos;
+			productReference = AA0000010000000000005000 /* NoMoreChaos.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AA0000010000000000001000 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					AA0000010000000000006000 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
+			};
+			buildConfigurationList = AA000001000000000000A000 /* Build configuration list for PBXProject "NoMoreChaos" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = AA0000010000000000002000 /* root */;
+			productRefGroup = AA0000010000000000004000 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AA0000010000000000006000 /* NoMoreChaos */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AA0000010000000000009000 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA000001000000000000B017 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AA0000010000000000007000 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA000001000000000000B001 /* NoMoreChaosApp.swift in Sources */,
+				AA000001000000000000B002 /* AppDelegate.swift in Sources */,
+				AA000001000000000000B003 /* ContentView.swift in Sources */,
+				AA000001000000000000B004 /* WindowTracker.swift in Sources */,
+				AA000001000000000000B020 /* AccessibilityWindows.swift in Sources */,
+				AA000001000000000000B005 /* CoreDataManager.swift in Sources */,
+				AA000001000000000000B006 /* Persistence.swift in Sources */,
+				AA000001000000000000B009 /* NoMoreChaos.xcdatamodeld in Sources */,
+				AA000001000000000000B010 /* HUDPanel.swift in Sources */,
+				AA000001000000000000B011 /* HUDView.swift in Sources */,
+				AA000001000000000000B012 /* NavigationController.swift in Sources */,
+				AA000001000000000000B013 /* MapPanel.swift in Sources */,
+				AA000001000000000000B014 /* MapView.swift in Sources */,
+				AA000001000000000000B015 /* GeminiService.swift in Sources */,
+				AA000001000000000000B016 /* SuggestionBannerView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		AA000001000000000000C000 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AA000001000000000000D000 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		AA000001000000000000E000 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = NoMoreChaos/NoMoreChaos.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = NoMoreChaos/Info.plist;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nomorechaos.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		AA000001000000000000F000 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = NoMoreChaos/NoMoreChaos.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = NoMoreChaos/Info.plist;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nomorechaos.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AA000001000000000000A000 /* Build configuration list for PBXProject "NoMoreChaos" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA000001000000000000C000 /* Debug */,
+				AA000001000000000000D000 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA000001000000000000B000 /* Build configuration list for PBXNativeTarget "NoMoreChaos" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA000001000000000000E000 /* Debug */,
+				AA000001000000000000F000 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		AA000001000000000000F009 /* NoMoreChaos.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				AA000001000000000000F00A /* NoMoreChaos.xcdatamodel */,
+			);
+			currentVersion = AA000001000000000000F00A /* NoMoreChaos.xcdatamodel */;
+			name = NoMoreChaos.xcdatamodeld;
+			path = NoMoreChaos.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+
+	};
+	rootObject = AA0000010000000000001000 /* Project object */;
+}

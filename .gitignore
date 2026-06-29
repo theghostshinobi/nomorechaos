@@ -1,0 +1,25 @@
+# Xcode
+#
+build/
+DerivedData/
+*.moved-aside
+*.xcuserstate
+*.xcworkspace
+
+# macOS
+#
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+.DocumentRevisions-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Personal / System
+#
+.gemini/
+.agents/
+*.log
