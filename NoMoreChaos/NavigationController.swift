@@ -454,6 +454,10 @@ final class NavigationController: ObservableObject {
         screenshotCache.removeObject(forKey: cacheKey(for: windowID))
     }
 
+    static func invalidateScreenshotCache(for windowID: Int32) {
+        screenshotCache.removeObject(forKey: cacheKey(for: windowID))
+    }
+
     func preWarmScreenshotCache() {
         let ids = windowEntries.map { $0.windowID }
         Task.detached(priority: .utility) {

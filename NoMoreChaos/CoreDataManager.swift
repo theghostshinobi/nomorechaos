@@ -183,6 +183,7 @@ final class CoreDataManager: ObservableObject {
                     // Update dynamic properties
                     if entry.windowTitle != liveWin.title {
                         entry.windowTitle = liveWin.title
+                        NavigationController.invalidateScreenshotCache(for: entry.windowID)
                     }
                     entry.windowX = liveWin.x
                     entry.windowY = liveWin.y
@@ -215,6 +216,13 @@ final class CoreDataManager: ObservableObject {
             if var ids = liveBySignature[s], !ids.isEmpty {
                 let liveID = ids.removeFirst()
                 liveBySignature[s] = ids
+                
+                let oldID = entry.windowID
+                if oldID != liveID {
+                    NavigationController.invalidateScreenshotCache(for: oldID)
+                    NavigationController.invalidateScreenshotCache(for: liveID)
+                }
+                
                 entry.windowID = liveID
                 entry.isActive = true
                 entry.lastSeenAt = now
