@@ -255,6 +255,17 @@ struct AppIconView: NSViewRepresentable {
             return
         }
 
+        // Se è un'applicazione locale/di sviluppo, usa subito l'icona del martello di Xcode/sviluppatore
+        if bid.hasPrefix("local.utility.") {
+            let localImg = NSImage(
+                systemSymbolName: "hammer.fill",
+                accessibilityDescription: nil
+            ) ?? NSImage()
+            Self.setCachedImage(localImg, for: bid)
+            iv.image = localImg
+            return
+        }
+
         iv.image = NSImage(
             systemSymbolName: "app.fill",
             accessibilityDescription: nil

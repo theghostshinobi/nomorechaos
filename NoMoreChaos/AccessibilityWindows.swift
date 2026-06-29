@@ -29,58 +29,53 @@ enum AXWindows {
     /// Accessibility (caller falls back to a plain app activation).
     @discardableResult
     static func raise(windowID: CGWindowID, bundleID: String?) async -> Bool {
-        // First pass narrows to the owning app (fast); second pass searches
-        // everything in case the bundleID hint was stale.
-        if let bundleID, await raiseInApps(windowID: windowID, matching: bundleID) { return true }
-        return await raiseInApps(windowID: windowID, matching: nil)
-    }
+        // 1. Trova il PID proprietario della finestra fisica da CoreGraphics
+        guard let list = CGWindowListCopyWindowInfo([.optionIncludingWindow], windowID) as? [[String: Any]],
+              let info = list.first,
+              let pid = info[kCGWindowOwnerPID as String] as? pid_t else {
+            return false
+        }
 
-    private static func raiseInApps(windowID: CGWindowID, matching bundleID: String?) async -> Bool {
-        for app in NSWorkspace.shared.runningApplications {
-            guard app.activationPolicy == .regular || app.activationPolicy == .accessory,
-                  !app.isTerminated
-            else { continue }
-            if let bundleID, app.bundleIdentifier != bundleID { continue }
+        // 2. Trova l'applicazione attiva corrispondente
+        guard let app = NSRunningApplication(processIdentifier: pid),
+              !app.isTerminated else {
+            return false
+        }
 
-            let appEl = AXUIElementCreateApplication(app.processIdentifier)
-            AXUIElementSetMessagingTimeout(appEl, 0.3)
+        let appEl = AXUIElementCreateApplication(pid)
+        AXUIElementSetMessagingTimeout(appEl, 0.3)
 
-            // --- Phase 1: Try to find the window on the CURRENT Space (no activation) ---
-            var targetWindow: AXUIElement?
-            if let win = findAXWindow(windowID: windowID, in: appEl) {
-                targetWindow = win
-            } else if bundleID != nil {
-                // --- Phase 2: Window not on current Space. Activate the app so macOS
-                // switches to the Space where its windows live (requires the system
-                // preference "When switching to an application, switch to a Space with
-                // open windows for the application" to be enabled). ---
-                app.activate(options: [.activateIgnoringOtherApps])
+        // --- Phase 1: Cerca la finestra nello Space corrente (senza attivare l'app) ---
+        var targetWindow: AXUIElement?
+        if let win = findAXWindow(windowID: windowID, in: appEl) {
+            targetWindow = win
+        } else {
+            // --- Phase 2: La finestra è su un altro Space. Attiva l'app per forzare lo switch dello Space ---
+            app.activate(options: [.activateIgnoringOtherApps])
 
-                // Retry loop: wait for the Space switch and AX list to update.
-                for _ in 0..<5 {
-                    try? await Task.sleep(nanoseconds: 20_000_000) // 20ms
-                    if let win = findAXWindow(windowID: windowID, in: appEl) {
-                        targetWindow = win
-                        break
-                    }
+            // Retry loop: attendiamo che lo Space cambi e la gerarchia AX si aggiorni
+            for _ in 0..<5 {
+                try? await Task.sleep(nanoseconds: 20_000_000) // 20ms
+                if let win = findAXWindow(windowID: windowID, in: appEl) {
+                    targetWindow = win
+                    break
                 }
             }
-
-            guard let win = targetWindow else { continue }
-
-            // Unminimize the window first
-            AXUIElementSetAttributeValue(win, kAXMinimizedAttribute as CFString, kCFBooleanFalse)
-
-            // Raise the window in-place — do NOT reposition it.
-            AXUIElementSetAttributeValue(win, kAXMainAttribute as CFString, kCFBooleanTrue)
-            AXUIElementSetAttributeValue(win, kAXFocusedAttribute as CFString, kCFBooleanTrue)
-            AXUIElementPerformAction(win, kAXRaiseAction as CFString)
-
-            // Re-activate the application to guarantee front-most key focus
-            app.activate(options: [.activateIgnoringOtherApps])
-            return true
         }
-        return false
+
+        guard let win = targetWindow else { return false }
+
+        // Ripristina se minimizzata
+        AXUIElementSetAttributeValue(win, kAXMinimizedAttribute as CFString, kCFBooleanFalse)
+
+        // Porta la finestra in evidenza
+        AXUIElementSetAttributeValue(win, kAXMainAttribute as CFString, kCFBooleanTrue)
+        AXUIElementSetAttributeValue(win, kAXFocusedAttribute as CFString, kCFBooleanTrue)
+        AXUIElementPerformAction(win, kAXRaiseAction as CFString)
+
+        // Re-attiva per garantire il focus principale
+        app.activate(options: [.activateIgnoringOtherApps])
+        return true
     }
 
     /// Searches an app's AX window list for one matching the given CGWindowID.

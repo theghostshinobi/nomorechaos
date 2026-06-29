@@ -105,10 +105,14 @@ final class WindowTracker: ObservableObject {
             // Real owning app (.accessory allowed so menu-bar apps with a real
             // window still count); never our own windows.
             let app = NSRunningApplication(processIdentifier: pid)
-            guard let bundleID = app?.bundleIdentifier,
-                  app?.activationPolicy != .prohibited,
-                  bundleID != mine
-            else { continue }
+            if let app = app, app.activationPolicy == .prohibited {
+                continue
+            }
+
+            let sanitizedOwner = ownerName.replacingOccurrences(of: " ", with: "-").lowercased()
+            let bundleID = app?.bundleIdentifier ?? "local.utility.\(sanitizedOwner)"
+
+            guard bundleID != mine else { continue }
 
             var bounds = CGRect.zero
             if let b = info[kCGWindowBounds as String] {
