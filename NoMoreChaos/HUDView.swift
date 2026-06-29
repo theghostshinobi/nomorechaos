@@ -140,8 +140,8 @@ struct WindowPreviewView: View {
     let size: CGSize
 
     @State private var state: CaptureState = .loading
-    @State private var capturedID: Int32 = -1
     @State private var captureTask: Task<Void, Never>? = nil
+    @State private var refreshTimer: Timer? = nil
 
     var body: some View {
         ZStack {
@@ -179,53 +179,64 @@ struct WindowPreviewView: View {
             }
         }
         .frame(width: size.width, height: size.height)
-        .onAppear { capture() }
-        .onChange(of: windowID) { _ in capture() }
+        .onAppear {
+            capture(isInitial: true)
+            startRefreshTimer()
+        }
+        .onChange(of: windowID) { _ in
+            capture(isInitial: true)
+        }
         .onDisappear {
             captureTask?.cancel()
             captureTask = nil
+            refreshTimer?.invalidate()
+            refreshTimer = nil
         }
     }
 
-    private func capture() {
-        guard windowID != capturedID else { return }
-        capturedID = windowID
+    /// Periodically refresh the preview so it stays in sync with the live window.
+    private func startRefreshTimer() {
+        refreshTimer?.invalidate()
+        refreshTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { _ in
+            capture(isInitial: false)
+        }
+    }
+
+    private func capture(isInitial: Bool) {
+        // Always invalidate the cache for this window to ensure fresh capture
+        NavigationController.invalidateScreenshotCache(for: windowID)
+
         captureTask?.cancel()
 
         let id = windowID
-        let key = NavigationController.cacheKey(for: id)
 
-        if let cached = NavigationController.screenshotCache.object(forKey: key) {
-            state = .loaded(cached)
-            captureTask = Task {
-                if let fresh = await NavigationController.captureWindowImageAsync(windowID: id, ignoreCache: true) {
-                    if !Task.isCancelled {
-                        state = .loaded(fresh)
-                    }
-                }
-            }
-            return
+        if isInitial {
+            state = .loading
         }
-
-        state = .loading
 
         captureTask = Task {
             let imgTask = Task {
                 await NavigationController.captureWindowImageAsync(windowID: id, ignoreCache: true)
             }
-            
+
             let timeoutTask = Task {
-                try? await Task.sleep(nanoseconds: 6_000_000_000)
+                try? await Task.sleep(nanoseconds: 3_000_000_000) // 3s timeout
                 if !Task.isCancelled {
                     imgTask.cancel()
                 }
             }
-            
+
             let img = await imgTask.value
             timeoutTask.cancel()
-            
+
             if !Task.isCancelled {
-                state = img.map { .loaded($0) } ?? .failed
+                if let image = img {
+                    state = .loaded(image)
+                } else if isInitial {
+                    state = .failed
+                }
+                // If not initial (periodic refresh) and capture failed,
+                // keep showing the last good image instead of flashing to "failed"
             }
         }
     }
