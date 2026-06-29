@@ -459,7 +459,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         ) as? [[String: Any]] else { return }
 
         guard let info = windowList.first(where: {
-            ($0[kCGWindowNumber as String] as? Int32) == windowID
+            if let num = $0[kCGWindowNumber as String] as? Int {
+                return Int32(bitPattern: UInt32(truncatingIfNeeded: num)) == windowID
+            }
+            return false
         }),
         let pid = info[kCGWindowOwnerPID as String] as? pid_t
         else { return }

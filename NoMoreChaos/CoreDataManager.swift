@@ -43,8 +43,8 @@ final class CoreDataManager: ObservableObject {
     ) -> AppGroup {
         let request: NSFetchRequest<AppGroup> = AppGroup.fetchRequest()
         request.predicate = NSPredicate(
-            format: "appBundleID == %@ AND project == %@",
-            bundleID, project
+            format: "appBundleID == %@ AND appName == %@ AND project == %@",
+            bundleID, appName, project
         )
 
         if let existing = try? viewContext.fetch(request).first {
@@ -144,15 +144,16 @@ final class CoreDataManager: ObservableObject {
     // and liveness. Windows no longer open are flagged inactive (kept, so
     // they re-attach automatically the next time they appear).
 
-    private func signature(bundleID: String, title: String, x: Double, y: Double) -> String {
+    private func signature(bundleID: String, appName: String, title: String, x: Double, y: Double) -> String {
         let t = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let a = appName.trimmingCharacters(in: .whitespacesAndNewlines)
         if t.isEmpty {
             // No real title (e.g. Screen Recording permission not granted) —
             // disambiguate same-app windows by position as a best-effort
             // tiebreaker so two of them don't collapse to one identity.
-            return bundleID + "\u{0}@\(Int(x.rounded())),\(Int(y.rounded()))"
+            return bundleID + "\u{0}" + a + "\u{0}@\(Int(x.rounded())),\(Int(y.rounded()))"
         }
-        return bundleID + "\u{0}" + t
+        return bundleID + "\u{0}" + a + "\u{0}" + t
     }
 
     func reconcile(openWindows: [TrackedWindow]) {
@@ -161,7 +162,7 @@ final class CoreDataManager: ObservableObject {
         // Group open windows by signature for Pass 2 (fallback signature matching)
         var liveBySignature: [String: [Int32]] = [:]
         for w in openWindows {
-            let sig = signature(bundleID: w.bundleID, title: w.title, x: w.x, y: w.y)
+            let sig = signature(bundleID: w.bundleID, appName: w.appName, title: w.title, x: w.x, y: w.y)
             liveBySignature[sig, default: []].append(Int32(bitPattern: UInt32(truncatingIfNeeded: w.id)))
         }
 
@@ -189,7 +190,7 @@ final class CoreDataManager: ObservableObject {
                     entry.lastSeenAt = now
                     
                     // Consume this live window from the fallback pool
-                    let s = signature(bundleID: liveWin.bundleID, title: liveWin.title, x: liveWin.x, y: liveWin.y)
+                    let s = signature(bundleID: liveWin.bundleID, appName: liveWin.appName, title: liveWin.title, x: liveWin.x, y: liveWin.y)
                     if var ids = liveBySignature[s], let idx = ids.firstIndex(of: entry.windowID) {
                         ids.remove(at: idx)
                         liveBySignature[s] = ids
@@ -202,6 +203,7 @@ final class CoreDataManager: ObservableObject {
 
         func sig(_ e: WindowEntry) -> String {
             signature(bundleID: e.appGroup?.appBundleID ?? "",
+                      appName: e.appGroup?.appName ?? "",
                       title: e.windowTitle ?? "",
                       x: e.windowX, y: e.windowY)
         }

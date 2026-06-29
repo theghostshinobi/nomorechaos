@@ -408,8 +408,16 @@ final class NavigationController: ObservableObject {
     // at runtime on macOS 15+, which is why thumbnails were blank. macOS 13
     // falls back to the legacy API.
 
+    static func cacheKey(for windowID: Int32) -> NSNumber {
+        return NSNumber(value: Int(UInt32(bitPattern: windowID)))
+    }
+
+    static func cacheKey(for cgWindowID: CGWindowID) -> NSNumber {
+        return NSNumber(value: Int(cgWindowID))
+    }
+
     static func captureWindowImageAsync(windowID: Int32, ignoreCache: Bool = false) async -> NSImage? {
-        let key = NSNumber(value: windowID)
+        let key = cacheKey(for: windowID)
         if !ignoreCache, let cached = screenshotCache.object(forKey: key) {
             return cached
         }
@@ -417,24 +425,40 @@ final class NavigationController: ObservableObject {
         guard CGPreflightScreenCaptureAccess() else { return nil }
 
         // Utilizziamo l'API legacy sincrona (CGWindowListCreateImage) che è fulminea
-        // e immediata (<10ms), evitando i pesanti ritardi asincroni di ScreenCaptureKit.
-        let image = captureWindowImageLegacy(windowID: windowID)
-
-        if let image {
-            screenshotCache.setObject(image, forKey: key)
+        // e immediata (<10ms).
+        if let image = captureWindowImageLegacy(windowID: windowID) {
+            cacheImage(image, forKey: key)
+            return image
         }
-        return image
+
+        // Se fallisce (es. finestra su un altro Space o macOS 15+), ripieghiamo su ScreenCaptureKit
+        if #available(macOS 14.0, *) {
+            if let image = await captureWithScreenCaptureKit(windowID: windowID) {
+                cacheImage(image, forKey: key)
+                return image
+            }
+        }
+
+        return nil
+    }
+
+    private static func cacheImage(_ image: NSImage, forKey key: NSNumber) {
+        let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil)
+        let width = cgImage?.width ?? Int(image.size.width)
+        let height = cgImage?.height ?? Int(image.size.height)
+        let cost = width * height * 4
+        screenshotCache.setObject(image, forKey: key, cost: cost > 0 ? cost : 1024 * 1024)
     }
 
     static func invalidateScreenshotCache(for windowID: CGWindowID) {
-        screenshotCache.removeObject(forKey: NSNumber(value: windowID))
+        screenshotCache.removeObject(forKey: cacheKey(for: windowID))
     }
 
     func preWarmScreenshotCache() {
         let ids = windowEntries.map { $0.windowID }
         Task.detached(priority: .utility) {
             for id in ids {
-                let key = NSNumber(value: id)
+                let key = NavigationController.cacheKey(for: id)
                 if NavigationController.screenshotCache.object(forKey: key) == nil {
                     _ = await NavigationController.captureWindowImageAsync(windowID: id)
                 }
@@ -446,7 +470,14 @@ final class NavigationController: ObservableObject {
     private static func captureWithScreenCaptureKit(windowID: Int32) async -> NSImage? {
         do {
             var content = try await ShareableContentCache.shared.content()
-            guard let scWindow = content.windows.first(where: { $0.windowID == CGWindowID(windowID) }) else { return nil }
+            guard let scWindow = content.windows.first(where: { $0.windowID == CGWindowID(bitPattern: windowID) }) else { return nil }
+
+            // Se la finestra è su un altro Space o minimizzata, non è sullo schermo (isOnScreen è false).
+            // Lo screenshot con ScreenCaptureKit fallirebbe comunque, sprecando CPU e potenzialmente
+            // causando memory leak nei percorsi interni di errore della GPU.
+            guard scWindow.isOnScreen else {
+                return nil
+            }
 
             let filter = SCContentFilter(desktopIndependentWindow: scWindow)
             let config = SCStreamConfiguration()
@@ -462,9 +493,31 @@ final class NavigationController: ObservableObject {
                 contentFilter: filter,
                 configuration: config
             )
+
+            // Forza la copia dei pixel in una bitmap CPU per rilasciare immediatamente l'IOSurface della GPU.
+            let width = cgImage.width
+            let height = cgImage.height
+            let colorSpace = CGColorSpaceCreateDeviceRGB()
+            guard let context = CGContext(
+                data: nil,
+                width: width,
+                height: height,
+                bitsPerComponent: 8,
+                bytesPerRow: width * 4,
+                space: colorSpace,
+                bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+            ) else {
+                return NSImage(cgImage: cgImage, size: NSSize(width: width, height: height))
+            }
+
+            context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+            guard let cpuCgImage = context.makeImage() else {
+                return NSImage(cgImage: cgImage, size: NSSize(width: width, height: height))
+            }
+
             return NSImage(
-                cgImage: cgImage,
-                size: NSSize(width: cgImage.width, height: cgImage.height)
+                cgImage: cpuCgImage,
+                size: NSSize(width: width, height: height)
             )
         } catch {
             print("[NavigationController] ScreenCaptureKit capture failed for window \(windowID): \(error)")
@@ -476,7 +529,7 @@ final class NavigationController: ObservableObject {
         guard let cgImage = CGWindowListCreateImage(
             .null,
             .optionIncludingWindow,
-            CGWindowID(windowID),
+            CGWindowID(bitPattern: windowID),
             [.bestResolution, .boundsIgnoreFraming]
         ) else { return nil }
 
@@ -712,7 +765,6 @@ actor ShareableContentCache {
     private var cached: SCShareableContent?
     private var fetchedAt: Date = .distantPast
     private var inFlight: Task<SCShareableContent, Error>?
-    private var inFlightStartedAt: Date = .distantPast
     private let ttl: TimeInterval = 0.5
 
     func content() async throws -> SCShareableContent {
@@ -720,36 +772,26 @@ actor ShareableContentCache {
         if let cached, now.timeIntervalSince(fetchedAt) < ttl {
             return cached
         }
-        if let inFlight {
-            if now.timeIntervalSince(inFlightStartedAt) < 3.0 {
-                return try await inFlight.value
-            } else {
-                inFlight.cancel()
-                self.inFlight = nil
-            }
+        
+        if let inFlight = inFlight {
+            return try await inFlight.value
         }
         
-        let startedAt = now
-        inFlightStartedAt = startedAt
         let task = Task<SCShareableContent, Error> {
             try await SCShareableContent.excludingDesktopWindows(
                 false, onScreenWindowsOnly: false
             )
         }
-        inFlight = task
+        self.inFlight = task
         
         do {
             let result = try await task.value
-            if self.inFlightStartedAt == startedAt {
-                self.cached = result
-                self.fetchedAt = Date()
-                self.inFlight = nil
-            }
+            self.cached = result
+            self.fetchedAt = Date()
+            self.inFlight = nil
             return result
         } catch {
-            if self.inFlightStartedAt == startedAt {
-                self.inFlight = nil
-            }
+            self.inFlight = nil
             throw error
         }
     }

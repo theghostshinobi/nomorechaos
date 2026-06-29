@@ -47,6 +47,8 @@ struct WindowThumbnailView: View {
     let bundleID: String?
 
     @State private var state: CaptureState = .loading
+    @State private var capturedID: Int32 = -1
+    @State private var captureTask: Task<Void, Never>? = nil
 
     var body: some View {
         ZStack {
@@ -78,22 +80,28 @@ struct WindowThumbnailView: View {
             }
         }
         .onAppear { capture() }
-        .onChange(of: windowID) { _ in
-            state = .loading
-            capture()
+        .onChange(of: windowID) { _ in capture() }
+        .onDisappear {
+            captureTask?.cancel()
+            captureTask = nil
         }
     }
 
     private func capture() {
+        guard windowID != capturedID else { return }
+        capturedID = windowID
+        captureTask?.cancel()
+
         let id = windowID
-        let key = NSNumber(value: id)
+        let key = NavigationController.cacheKey(for: id)
 
         if let cached = NavigationController.screenshotCache.object(forKey: key) {
             state = .loaded(cached)
-            Task {
-                if let fresh = await NavigationController.captureWindowImageAsync(windowID: id, ignoreCache: true),
-                   id == windowID {
-                    state = .loaded(fresh)
+            captureTask = Task {
+                if let fresh = await NavigationController.captureWindowImageAsync(windowID: id, ignoreCache: true) {
+                    if !Task.isCancelled {
+                        state = .loaded(fresh)
+                    }
                 }
             }
             return
@@ -101,21 +109,22 @@ struct WindowThumbnailView: View {
 
         state = .loading
 
-        let captureTask = Task {
-            await NavigationController.captureWindowImageAsync(windowID: id, ignoreCache: true)
-        }
-        
-        Task {
-            try? await Task.sleep(nanoseconds: 6_000_000_000)
-            if id == windowID && state.isLoading {
-                state = .failed
-                captureTask.cancel()
+        captureTask = Task {
+            let imgTask = Task {
+                await NavigationController.captureWindowImageAsync(windowID: id, ignoreCache: true)
             }
-        }
-        
-        Task {
-            let img = await captureTask.value
-            if id == windowID {
+            
+            let timeoutTask = Task {
+                try? await Task.sleep(nanoseconds: 6_000_000_000)
+                if !Task.isCancelled {
+                    imgTask.cancel()
+                }
+            }
+            
+            let img = await imgTask.value
+            timeoutTask.cancel()
+            
+            if !Task.isCancelled {
                 state = img.map { .loaded($0) } ?? .failed
             }
         }
@@ -132,6 +141,7 @@ struct WindowPreviewView: View {
 
     @State private var state: CaptureState = .loading
     @State private var capturedID: Int32 = -1
+    @State private var captureTask: Task<Void, Never>? = nil
 
     var body: some View {
         ZStack {
@@ -171,20 +181,27 @@ struct WindowPreviewView: View {
         .frame(width: size.width, height: size.height)
         .onAppear { capture() }
         .onChange(of: windowID) { _ in capture() }
+        .onDisappear {
+            captureTask?.cancel()
+            captureTask = nil
+        }
     }
 
     private func capture() {
         guard windowID != capturedID else { return }
         capturedID = windowID
+        captureTask?.cancel()
+
         let id = windowID
-        let key = NSNumber(value: id)
+        let key = NavigationController.cacheKey(for: id)
 
         if let cached = NavigationController.screenshotCache.object(forKey: key) {
             state = .loaded(cached)
-            Task {
-                if let fresh = await NavigationController.captureWindowImageAsync(windowID: id, ignoreCache: true),
-                   id == capturedID {
-                    state = .loaded(fresh)
+            captureTask = Task {
+                if let fresh = await NavigationController.captureWindowImageAsync(windowID: id, ignoreCache: true) {
+                    if !Task.isCancelled {
+                        state = .loaded(fresh)
+                    }
                 }
             }
             return
@@ -192,21 +209,22 @@ struct WindowPreviewView: View {
 
         state = .loading
 
-        let captureTask = Task {
-            await NavigationController.captureWindowImageAsync(windowID: id, ignoreCache: true)
-        }
-        
-        Task {
-            try? await Task.sleep(nanoseconds: 6_000_000_000)
-            if id == capturedID && state.isLoading {
-                state = .failed
-                captureTask.cancel()
+        captureTask = Task {
+            let imgTask = Task {
+                await NavigationController.captureWindowImageAsync(windowID: id, ignoreCache: true)
             }
-        }
-        
-        Task {
-            let img = await captureTask.value
-            if id == capturedID {
+            
+            let timeoutTask = Task {
+                try? await Task.sleep(nanoseconds: 6_000_000_000)
+                if !Task.isCancelled {
+                    imgTask.cancel()
+                }
+            }
+            
+            let img = await imgTask.value
+            timeoutTask.cancel()
+            
+            if !Task.isCancelled {
                 state = img.map { .loaded($0) } ?? .failed
             }
         }
