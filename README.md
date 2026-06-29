@@ -2,11 +2,9 @@
 
 ![NoMoreChaos HUD Preview](Assets/nomorechaos_hud_preview.png)
 
-<p align="center">
-  <a href="https://github.com/theghostshinobi/nomorechaos/releases/download/v1.0.0/NoMoreChaos.dmg">
-    <img src="https://img.shields.io/badge/Download-DMG-blue?style=for-the-badge&logo=apple&logoColor=white" alt="Download macOS DMG" />
-  </a>
-</p>
+## 📥 [Download NoMoreChaos v1.0.0 (macOS DMG)](https://github.com/theghostshinobi/nomorechaos/releases/download/v1.0.0/NoMoreChaos.dmg)
+
+---
 
 **NoMoreChaos** is a premium window manager for macOS designed to eliminate visual clutter and organize your workspace logically and fluidly. It groups open windows from any application into coherent "Projects", allowing you to jump instantly between different workflows without distractions.
 
