@@ -2,52 +2,52 @@
 
 ![NoMoreChaos HUD Preview](Assets/nomorechaos_hud_preview.png)
 
-**NoMoreChaos** è un window manager premium per macOS progettato per eliminare il disordine visivo e organizzare in modo logico e fluido il tuo spazio di lavoro. Raggruppa le finestre aperte di qualsiasi applicazione in "Progetti" coerenti, permettendoti di saltare istantaneamente da un contesto all'altro senza distrazioni.
+**NoMoreChaos** is a premium window manager for macOS designed to eliminate visual clutter and organize your workspace logically and fluidly. It groups open windows from any application into coherent "Projects", allowing you to jump instantly between different workflows without distractions.
 
 ---
 
-## 🚀 Caratteristiche Principali
+## 🚀 Key Features
 
-### 1. Gestione dei Progetti e Preview HUD
-Associa le finestre fisiche a specifici progetti personalizzati. L'interfaccia dell'HUD mostra le miniature live delle finestre assegnate con la possibilità di rimuoverle con un click.
+### 1. Project Management & HUD Preview
+Associate physical windows with specific custom projects. The HUD interface displays live thumbnails of assigned windows with the ability to remove them in one click.
 
 ![NoMoreChaos HUD Preview](Assets/nomorechaos_hud_preview.png)
 
-### 2. Aggiunta Rapida delle Finestre
-Visualizza l'elenco completo di tutte le finestre aperte sul tuo Mac, divise per applicazione, con la possibilità di aggiungere singole finestre o tutte le finestre di un applicativo in blocco (tramite il pulsante verde "+ Aggiungi tutte").
+### 2. Quick Window Addition
+View a complete list of all open windows on your Mac, grouped by application, with the ability to add individual windows or assign all windows of an application in bulk (via the green "+ Add All" button).
 
 ![NoMoreChaos Add Open Windows](Assets/nomorechaos_hud_list.png)
 
-### 3. Mappa Visiva Interattiva
-Visualizza la mappa ad albero di tutti i tuoi progetti e delle finestre collegate con connessioni grafiche dinamiche per capire a colpo d'occhio come sono organizzati i tuoi contesti di lavoro.
+### 3. Interactive Visual Map
+Display a node-based tree map of all your projects and connected windows with dynamic connection lines to understand at a glance how your workspaces are structured.
 
 ![NoMoreChaos Visual Map](Assets/nomorechaos_visual_map.png)
 
-### 4. Evidenziamento Cornice Luminosa
-Quando salti ad una finestra, questa viene messa in risalto istantaneamente con una cornice bianca sfumata ad alto contrasto con effetto bagliore (glow) per 1 secondo, per farti capire al volo dove sei atterrato.
+### 4. Glowing Window Highlight
+When you jump to a window, it is instantly highlighted with a high-contrast glowing white border for 1 second, providing immediate visual feedback of where you landed.
 
-### 5. Caricamento Anteprime Istantaneo
-Utilizza una pipeline nativa ultra-rapida a bassa latenza (<10ms) per mostrare gli screenshot live delle finestre nell'HUD e nella Mappa.
-
----
-
-## 🔒 Workflow delle Autorizzazioni di macOS
-
-Per funzionare in modo corretto ed efficiente, NoMoreChaos richiede due permessi di sistema standard su macOS. L'app include un **Setup Wizard** iniziale che ti guida passo dopo passo nella configurazione:
-
-### 1. Registrazione Schermo (Screen Recording)
-* **Perché serve**: Consente a NoMoreChaos di catturare le miniature visive (screenshot live) delle finestre per mostrarti l'anteprima reale all'interno dell'HUD e della Mappa.
-* **Sicurezza**: Le immagini vengono elaborate localmente e non vengono mai salvate su disco né trasmesse all'esterno.
-
-### 2. Accessibilità (Accessibility)
-* **Perché serve**: È lo standard utilizzato da tutti i window manager (come Rectangle o Magnet). Permette all'applicazione di comandare fisicamente lo spostamento, il ridimensionamento, la riduzione ad icona e l'attivazione in primo piano delle singole finestre quando esegui un salto.
+### 5. Instant Preview Load
+Utilizes a super-fast, low-latency native pipeline (<10ms) to capture and render live window screenshots in both the HUD and the Visual Map.
 
 ---
 
-## 🛠️ Come Iniziare
+## 🔒 macOS Permissions Workflow
 
-1. Scarica l'applicazione ed esegui **NoMoreChaos.app**.
-2. Completa il **Setup Wizard** iniziale per abilitare i permessi di Registrazione Schermo e Accessibilità.
-3. Crea il tuo primo Progetto.
-4. Premi `+ Aggiungi Finestra` per collegare le finestre attualmente aperte sul tuo Mac.
-5. Usa le frecce direzionali e premi **Invio** sull'HUD o clicca sulla **Mappa** per saltare istantaneamente da un progetto all'altro!
+To function correctly and efficiently, NoMoreChaos requires two standard macOS system permissions. The app features an initial **Setup Wizard** that guides you step-by-step through the configuration:
+
+### 1. Screen Recording
+* **Why it is needed**: Allows NoMoreChaos to capture visual thumbnails (live screenshots) of windows to display real-time previews inside the HUD and the Visual Map.
+* **Security**: Images are processed entirely locally and are never saved to disk or transmitted over the network.
+
+### 2. Accessibility
+* **Why it is needed**: This is the standard permission used by all window managers (such as Rectangle or Magnet). It allows the application to physically move, resize, minimize, and bring specific windows to the front when you perform a jump.
+
+---
+
+## 🛠️ Getting Started
+
+1. Download the application and run **NoMoreChaos.app**.
+2. Complete the initial **Setup Wizard** to enable Screen Recording and Accessibility permissions.
+3. Create your first Project.
+4. Press `+ Add Window` to connect windows currently open on your Mac.
+5. Use the arrow keys and press **Enter** on the HUD, or click nodes on the **Visual Map** to jump instantly between projects!
