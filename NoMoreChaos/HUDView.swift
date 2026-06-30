@@ -573,6 +573,7 @@ struct HUDView: View {
                         title: displayTitle(for: entry),
                         size: CGSize(width: 480, height: 280)
                     )
+                    .id(entry.windowID)  // Force SwiftUI to recreate view when window changes
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                     .overlay(
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
